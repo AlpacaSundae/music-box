@@ -11,10 +11,10 @@
 #include "tone.h"
 #include "musicBox.h"
 
-Tone chan[CHANNEL_N];    // create the tones
-int sensorPin = INPUT_PIN;    // select the input pin for the potentiometer
-float sensorValue = 0;    // variable to store the value coming from the sensor
-float multiplier = 0;    //Multiplier for altering the note durations
+Tone chan[CHANNEL_N];      // create the tones
+int sensorPin = INPUT_PIN; // select the input pin for the potentiometer
+float sensorValue = 0;     // variable to store the value coming from the sensor
+float multiplier = 0;      //Multiplier for altering the note durations
 File songDir;
 File chanFile[CHANNEL_N];
 String curSong;
@@ -26,7 +26,8 @@ int noteCount[CHANNEL_N] = {0, 0};
 char chanID[CHANNEL_N] = {'1', '2'};
 volatile bool interrupted = false;
 
-void setup() {
+void setup()
+{
 #ifdef DEBUG
   Serial.begin(9600);
   Serial.println("//init...");
@@ -39,7 +40,7 @@ void setup() {
   pinMode(INTER_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(INTER_PIN), intChangeSong, CHANGE);
   nextSong();
-  
+
 #ifdef DEBUG
   Serial.println("//setup complete...");
 #endif
@@ -55,9 +56,9 @@ void intChangeSong()
 
 void nextSong()
 {
-  if(chanFile[0])
+  if (chanFile[0])
     chanFile[0].close();
-  if(chanFile[1])
+  if (chanFile[1])
     chanFile[1].close();
   File entry = songDir.openNextFile();
   if (!entry)
@@ -65,11 +66,11 @@ void nextSong()
     songDir.rewindDirectory();
     entry = songDir.openNextFile();
   }
-  
+
   //Create filename of next file
   curSong = MUSIC_DIR;
   curSong.concat(entry.name());
-  
+
   //Get details from the song using opened file
   initSong(entry);
   entry.close();
@@ -83,15 +84,15 @@ void nextSong()
 #endif
 }
 
-void openSong()  //Used for opening the current song for first or replay
+void openSong() //Used for opening the current song for first or replay
 {
   delay(50);
   //Open the current file for each channel
-  chanFile[0] = SD.open(curSong.c_str ()); 
-  chanFile[1] = SD.open(curSong.c_str ());
+  chanFile[0] = SD.open(curSong.c_str());
+  chanFile[1] = SD.open(curSong.c_str());
   //Seek the opened file pointer to the beginning of the channels note sections
   initChannel(chanFile[0], chanID[0]);
-  initChannel(chanFile[1], chanID[1]); 
+  initChannel(chanFile[1], chanID[1]);
 }
 
 void initSong(File readDetail)
@@ -108,7 +109,7 @@ void initSong(File readDetail)
   }
   temp[ii] = '\0';
   strncpy(track, temp, NAME_SIZE);
-  
+
   //Get artist name from file
   curChar = readDetail.read();
   ii = 0;
@@ -120,7 +121,7 @@ void initSong(File readDetail)
   }
   temp[ii] = '\0';
   strncpy(artist, temp, NAME_SIZE);
-  
+
   openSong();
 }
 
@@ -128,15 +129,15 @@ void initChannel(File chan, char number)
 {
   char curChar = chan.read();
   bool repeat = true;
-  while((curChar != '-1') && repeat)
+  while ((curChar != '-1') && repeat)
   {
-    if(curChar == '[')
+    if (curChar == '[')
     {
       curChar = chan.read();
-      if(curChar == number)
+      if (curChar == number)
       {
         repeat = false;
-        while((curChar != '-1') && (curChar != ']'))
+        while ((curChar != '-1') && (curChar != ']'))
         {
           curChar = chan.read();
         }
@@ -149,14 +150,14 @@ void initChannel(File chan, char number)
 bool nextLine()
 {
   delay(50);
-  
+
   bool cont = true;
   for (int ii = 0; ii < CHANNEL_N; ii++)
   {
     if (chanFile[ii].available())
     {
       char curChar = chanFile[ii].read();
-      char curLine[LINE_SIZE*16];
+      char curLine[LINE_SIZE * 16];
       int jj = 0;
       if ((curChar != '['))
       {
@@ -176,8 +177,8 @@ bool nextLine()
       {
         int kk = 0;
         int noNotes = 0;
-        int pos = 0;   
-        char* curTok = strtok(curLine, "|");
+        int pos = 0;
+        char *curTok = strtok(curLine, "|");
         sscanf(curTok, "%d", &noNotes);
         while (kk < noNotes)
         {
@@ -214,7 +215,7 @@ void playData()
       delay(10);
     }
     float multiplier = 3 * pow(0.85, sensorValue);
-    
+
     if (multiplier < 0.2)
     {
       multiplier = 0.1;
@@ -232,7 +233,7 @@ void playData()
         {
           if (curNote[ii] < noteCount[ii])
           {
-            chan[ii].play(chanData[ii][0][curNote[ii]], multiplier*60000/(bpm*chanData[ii][1][curNote[ii]]));
+            chan[ii].play(chanData[ii][0][curNote[ii]], multiplier * 60000 / (bpm * chanData[ii][1][curNote[ii]]));
             curNote[ii]++;
           }
           else
@@ -250,7 +251,7 @@ void playData()
 
 void loop()
 {
-  while(!interrupted)
+  while (!interrupted)
   {
     if (nextLine())
     {
@@ -261,7 +262,7 @@ void loop()
       openSong();
     }
   }
-  
+
   nextSong();
   interrupted = false;
 }
