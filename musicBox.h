@@ -1,6 +1,7 @@
 #ifndef _musicBox_h
 #define _musicBox_h
 
+#define DEBUG
 #define INPUT_PIN A1
 #define CHANNEL_1 5
 #define CHANNEL_2 6

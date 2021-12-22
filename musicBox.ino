@@ -27,8 +27,11 @@ char chanID[CHANNEL_N] = {'1', '2'};
 volatile bool interrupted = false;
 
 void setup() {
+#ifdef DEBUG
   Serial.begin(9600);
   Serial.println("//init...");
+#endif
+
   SD.begin(10);
   chan[0].begin(CHANNEL_1);
   chan[1].begin(CHANNEL_2);
@@ -36,13 +39,18 @@ void setup() {
   pinMode(INTER_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(INTER_PIN), intChangeSong, CHANGE);
   nextSong();
+  
+#ifdef DEBUG
   Serial.println("//setup complete...");
+#endif
 }
 
 void intChangeSong()
 {
   interrupted = true;
+#ifdef DEBUG
   Serial.println("INTERRUPT");
+#endif
 }
 
 void nextSong()
@@ -65,12 +73,14 @@ void nextSong()
   //Get details from the song using opened file
   initSong(entry);
   entry.close();
-  
+
+#ifdef DEBUG
   Serial.println("Loaded the next song!");
   Serial.println(curSong);
   Serial.println(track);
   Serial.println(artist);
   Serial.println("BPM to be implemented");
+#endif
 }
 
 void openSong()  //Used for opening the current song for first or replay
@@ -188,7 +198,9 @@ bool nextLine()
 
 void playData()
 {
+#ifdef DEBUG
   Serial.println("playData()");
+#endif
   int curNote[2] = {0, 0};
   bool finish[2] = {0, 0};
 
@@ -231,7 +243,9 @@ void playData()
       }
     }
   }
+#ifdef DEBUG
   Serial.println("END playData()");
+#endif
 }
 
 void loop()
