@@ -101,7 +101,7 @@ void initSong(File readDetail)
   char temp[NAME_SIZE];
   char curChar = readDetail.read();
   int ii = 0;
-  while ((curChar != '-1') && (curChar != ',') && (ii < (NAME_SIZE - 1)))
+  while ((curChar != -1) && (curChar != ',') && (ii < (NAME_SIZE - 1)))
   {
     temp[ii] = curChar;
     curChar = readDetail.read();
@@ -113,7 +113,7 @@ void initSong(File readDetail)
   //Get artist name from file
   curChar = readDetail.read();
   ii = 0;
-  while ((curChar != '-1') && (curChar != ',') && (curChar != '\n') && (ii < (NAME_SIZE - 1)))
+  while ((curChar != -1) && (curChar != ',') && (curChar != '\n') && (ii < (NAME_SIZE - 1)))
   {
     temp[ii] = curChar;
     curChar = readDetail.read();
@@ -129,7 +129,7 @@ void initChannel(File chan, char number)
 {
   char curChar = chan.read();
   bool repeat = true;
-  while ((curChar != '-1') && repeat)
+  while ((curChar != -1) && repeat)
   {
     if (curChar == '[')
     {
@@ -137,7 +137,7 @@ void initChannel(File chan, char number)
       if (curChar == number)
       {
         repeat = false;
-        while ((curChar != '-1') && (curChar != ']'))
+        while ((curChar != -1) && (curChar != ']'))
         {
           curChar = chan.read();
         }
@@ -161,7 +161,7 @@ bool nextLine()
       int jj = 0;
       if ((curChar != '['))
       {
-        while ((curChar != '-1') && (curChar != '\n'))
+        while ((curChar != -1) && (curChar != '\n'))
         {
           curLine[jj] = curChar;
           curChar = chanFile[ii].read();
