@@ -207,25 +207,19 @@ void playData()
 
   while (!(finish[0] && finish[1]) && !interrupted)
   {
-    int sensorValue = 0;
-    delay(100);
-    while ((sensorValue < 2) && !interrupted)
+    sensorValue = analogRead(sensorPin);
+    float nextMult = constrain((3 * pow(0.85, sensorValue)), 0.1, 5);
+    float delta = (nextMult - multiplier) / 5; // used to make sure multiplier smoothly changes
+    if (delta < 0)
     {
-      sensorValue = analogRead(sensorPin);
-      delay(10);
+      multiplier = constrain(multiplier + delta, nextMult, 5);
     }
-    float multiplier = 3 * pow(0.85, sensorValue);
-
-    if (multiplier < 0.2)
+    else if (delta > 0)
     {
-      multiplier = 0.1;
-    }
-    else if (multiplier > 5)
-    {
-      multiplier = 5;
+      multiplier = constrain(multiplier + delta, 0.1, nextMult);
     }
 
-    if (!interrupted)
+    if ((sensorValue > 0) && !interrupted)
     {
       for (int ii = 0; ii < 2; ii++)
       {
