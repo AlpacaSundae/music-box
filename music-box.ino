@@ -9,7 +9,7 @@
 #include <SPI.h>
 #include <SD.h>
 #include "tone.h"
-#include "musicBox.h"
+#include "music-box.h"
 
 Tone chan[CHANNEL_N];      // create the tones
 int sensorPin = INPUT_PIN; // select the input pin for the potentiometer
