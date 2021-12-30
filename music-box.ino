@@ -20,7 +20,7 @@ File chanFile[CHANNEL_N];
 String curSong;
 char artist[NAME_SIZE];
 char track[NAME_SIZE];
-int bpm = 60;
+int bpm;
 unsigned int chanData[2][2][LINE_SIZE];
 int noteCount[CHANNEL_N] = {0, 0};
 char chanID[CHANNEL_N] = {'1', '2'};
@@ -80,7 +80,7 @@ void nextSong()
   Serial.println(curSong);
   Serial.println(track);
   Serial.println(artist);
-  Serial.println("BPM to be implemented");
+  Serial.println(bpm);
 #endif
 }
 
@@ -121,6 +121,19 @@ void initSong(File readDetail)
   }
   temp[ii] = '\0';
   strncpy(artist, temp, NAME_SIZE);
+
+  //Get bpm name from file
+  curChar = readDetail.read();
+  bpm = 0;
+  while ((curChar != -1) && (curChar != ',') && (curChar != '\n') && (ii < (NAME_SIZE - 1)))
+  {
+    bpm = 10*bpm + (curChar - '0');
+    curChar = readDetail.read();
+  }
+  if (bpm == 0)
+  {
+    bpm = 60;
+  }
 
   openSong();
 }
