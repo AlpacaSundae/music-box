@@ -220,25 +220,17 @@ void playData()
 
   while (!(finish[0] && finish[1]) && !interrupted)
   {
-    int sensorValue = 0;
-    delay(100);
-    while ((sensorValue < 2) && !interrupted)
-    {
-      sensorValue = analogRead(sensorPin);
-      delay(10);
-    }
-    float multiplier = 3 * pow(0.85, sensorValue);
-
-    if (multiplier < 0.2)
-    {
-      multiplier = 0.1;
-    }
-    else if (multiplier > 5)
+    sensorValue = analogRead(sensorPin);
+    if (sensorValue > 0)
     {
       multiplier = 5;
     }
+    else
+    {
+      multiplier -= 1;
+    }
 
-    if (!interrupted)
+    if ((multiplier > 0) && !interrupted)
     {
       for (int ii = 0; ii < 2; ii++)
       {
@@ -246,7 +238,7 @@ void playData()
         {
           if (curNote[ii] < noteCount[ii])
           {
-            chan[ii].play(chanData[ii][0][curNote[ii]], multiplier * 60000 / (bpm * chanData[ii][1][curNote[ii]]));
+            chan[ii].play(chanData[ii][0][curNote[ii]], 60000 / (bpm * chanData[ii][1][curNote[ii]]));
             curNote[ii]++;
           }
           else
