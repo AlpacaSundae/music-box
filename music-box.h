@@ -2,9 +2,9 @@
 #define _musicBox_h
 
 #define DEBUG
-#define INPUT_PIN A1
-#define CHANNEL_1 5
-#define CHANNEL_2 6
+#define INPUT_PIN A0
+#define CHANNEL_1 8
+#define CHANNEL_2 9
 #define MUSIC_DIR "/MusicBox/"
 #define NAME_SIZE 16
 #define LINE_SIZE 8
