@@ -208,18 +208,16 @@ void playData()
   while (!(finish[0] && finish[1]) && !interrupted)
   {
     sensorValue = analogRead(sensorPin);
-    float nextMult = constrain((3 * pow(0.85, sensorValue)), 0.1, 5);
-    float delta = (nextMult - multiplier) / 5; // used to make sure multiplier smoothly changes
-    if (delta < 0)
+    if (sensorValue > 0)
     {
-      multiplier = constrain(multiplier + delta, nextMult, 5);
+      multiplier = 5;
     }
-    else if (delta > 0)
+    else
     {
-      multiplier = constrain(multiplier + delta, 0.1, nextMult);
+      multiplier -= 1;
     }
 
-    if ((sensorValue > 0) && !interrupted)
+    if ((multiplier > 0) && !interrupted)
     {
       for (int ii = 0; ii < 2; ii++)
       {
@@ -227,7 +225,7 @@ void playData()
         {
           if (curNote[ii] < noteCount[ii])
           {
-            chan[ii].play(chanData[ii][0][curNote[ii]], multiplier * 60000 / (bpm * chanData[ii][1][curNote[ii]]));
+            chan[ii].play(chanData[ii][0][curNote[ii]], 60000 / (bpm * chanData[ii][1][curNote[ii]]));
             curNote[ii]++;
           }
           else
